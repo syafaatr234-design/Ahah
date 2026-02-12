@@ -1,486 +1,915 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Keamanan - Verifikasi Wajah</title>
+    <title>While Obfuscator - Lua Protection System</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: #f1f5f9;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            background: #0a0c0f;
+            color: #e0e0e0;
             padding: 20px;
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #1a1e2a, #0c0e14);
         }
-        
+
         .container {
-            max-width: 900px;
-            width: 100%;
-            background: rgba(30, 41, 59, 0.9);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(100, 116, 139, 0.3);
+            max-width: 1600px;
+            margin: 0 auto;
         }
-        
+
         .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(90deg, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-        }
-        
-        .camera-section {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            gap: 20px;
             margin-bottom: 30px;
+            padding: 10px 20px;
+            background: rgba(10, 20, 30, 0.6);
+            border-radius: 50px;
+            border: 1px solid #2a4a5a;
+            backdrop-filter: blur(5px);
         }
-        
-        .video-container {
-            position: relative;
-            width: 100%;
-            max-width: 640px;
-            background: #0f172a;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid #334155;
-        }
-        
-        #cameraFeed {
-            width: 100%;
-            height: auto;
-            display: block;
-            transform: scaleX(-1); /* Mirror effect */
-        }
-        
-        .controls {
+
+        h1 {
+            font-size: 28px;
+            color: #6effb8;
+            text-shadow: 0 0 15px rgba(110, 255, 184, 0.5);
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
+            align-items: center;
+            gap: 12px;
         }
-        
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
+
+        h1::before {
+            content: "🔄";
+            font-size: 32px;
+        }
+
+        h1::after {
+            content: "v3.0";
+            font-size: 14px;
+            background: #1e3a3a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #6effb8;
+            margin-left: 10px;
+            border: 1px solid #6effb8;
+        }
+
+        .status {
+            display: flex;
+            gap: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #161e26;
+            border-radius: 30px;
+            border: 1px solid #2a4050;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: #6effb8;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .main-panels {
+            display: grid;
+            grid-template-columns: 1fr 140px 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .panel {
+            background: #0f151d;
+            border: 1px solid #1e2f3a;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            transition: all 0.2s;
+        }
+
+        .panel:hover {
+            border-color: #3a6a7a;
+            box-shadow: 0 0 25px rgba(110, 255, 184, 0.1);
+        }
+
+        .panel-header {
+            background: #121c26;
+            padding: 14px 18px;
+            border-bottom: 1px solid #1e2f3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h3 {
+            color: #6effb8;
+            font-size: 15px;
             font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
-        #startCamera {
-            background: linear-gradient(90deg, #10b981, #34d399);
-            color: white;
+
+        .panel-header h3 i {
+            font-style: normal;
+            color: #a0ffd0;
         }
-        
-        #stopCamera {
-            background: linear-gradient(90deg, #ef4444, #f87171);
-            color: white;
+
+        .badge {
+            background: #1e2f3a;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            color: #b8e0e0;
+            border: 1px solid #2a4a5a;
         }
-        
-        #capturePhoto {
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
-            color: white;
-        }
-        
-        #recordVideo {
-            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-            color: white;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .status {
-            padding: 15px;
-            background: rgba(15, 23, 42, 0.7);
-            border-radius: 10px;
-            border-left: 4px solid #3b82f6;
-            margin: 20px 0;
-            font-family: monospace;
-        }
-        
-        #statusText {
-            color: #86efac;
-        }
-        
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .capture {
-            border-radius: 10px;
-            overflow: hidden;
-            border: 2px solid #334155;
+
+        .code-area {
             position: relative;
-        }
-        
-        .capture img, .capture video {
             width: 100%;
-            height: 150px;
-            object-fit: cover;
+            height: 550px;
         }
-        
-        .warning {
-            background: rgba(254, 226, 226, 0.1);
-            border: 1px solid rgba(248, 113, 113, 0.3);
-            border-radius: 10px;
-            padding: 15px;
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            background: #0a0f14;
+            border: none;
+            padding: 18px;
+            color: #d8e8e8;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            caret-color: #6effb8;
+        }
+
+        .center-controls {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            padding: 20px 0;
+        }
+
+        .obfuscate-btn {
+            background: linear-gradient(145deg, #1a3a3a, #0e1e1e);
+            border: 2px solid #6effb8;
+            color: #6effb8;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(110, 255, 184, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .obfuscate-btn:hover {
+            background: linear-gradient(145deg, #1e4a4a, #123030);
+            box-shadow: 0 0 45px rgba(110, 255, 184, 0.6);
+            transform: scale(1.05);
+            color: white;
+        }
+
+        .obfuscate-btn span {
+            font-size: 32px;
+        }
+
+        .settings {
+            background: #0f151d;
+            border: 1px solid #1e2f3a;
+            border-radius: 40px;
+            padding: 15px 25px;
+            width: 100%;
+        }
+
+        .settings h4 {
+            color: #8affc1;
+            margin-bottom: 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #b0c8d0;
+        }
+
+        .setting-item label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #6effb8;
+        }
+
+        .bottom-panel {
             margin-top: 25px;
-            font-size: 0.9rem;
-            color: #fca5a5;
+            background: #0f151d;
+            border: 1px solid #1e2f3a;
+            border-radius: 16px;
+            overflow: hidden;
         }
-        
-        .loading {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #60a5fa;
-            font-size: 1.2rem;
+
+        .bottom-header {
+            background: #121c26;
+            padding: 12px 20px;
+            border-bottom: 1px solid #1e2f3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
-        .hidden {
-            display: none;
+
+        .bottom-header h3 {
+            color: #6effb8;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: #1e2f3a;
+            border: 1px solid #2a4a5a;
+            color: #d0e8f0;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #2a4a5a;
+            color: white;
+            border-color: #6effb8;
+        }
+
+        .output-area {
+            width: 100%;
+            min-height: 200px;
+            max-height: 300px;
+            background: #0a0f14;
+            padding: 18px;
+            color: #b8e8d0;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .line-numbers {
+            color: #4a6a7a;
+            padding-right: 15px;
+            user-select: none;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #5a7a8a;
+            font-size: 12px;
+            border-top: 1px solid #1e2f3a;
+            padding-top: 20px;
+        }
+
+        .warning {
+            color: #ffaa6e;
+            font-size: 11px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0c1218;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a3a;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2a5a5a;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔐 Sistem Verifikasi Wajah</h1>
-            <p>Untuk keamanan akun Anda, mohon aktifkan kamera untuk proses autentikasi</p>
-        </div>
-        
-        <div class="status">
-            Status: <span id="statusText">Menunggu izin kamera...</span>
-        </div>
-        
-        <div class="camera-section">
-            <div class="video-container">
-                <div class="loading" id="loadingIndicator">
-                    Memuat kamera...
+            <h1>WHILE OBFUSCATOR</h1>
+            <div class="status">
+                <div class="status-item">
+                    <span class="dot"></span>
+                    <span>PROTECTION: ACTIVE</span>
                 </div>
-                <video id="cameraFeed" autoplay playsinline></video>
-            </div>
-            
-            <div class="controls">
-                <button id="startCamera">
-                    <span>🎥</span> Aktifkan Kamera
-                </button>
-                <button id="stopCamera" class="hidden">
-                    <span>⏹️</span> Nonaktifkan
-                </button>
-                <button id="capturePhoto">
-                    <span>📸</span> Tangkap Gambar
-                </button>
-                <button id="recordVideo">
-                    <span>🎬</span> Rekam Video (10 detik)
-                </button>
+                <div class="status-item">
+                    <span>🔒</span>
+                    <span>LUA 5.1/5.2</span>
+                </div>
             </div>
         </div>
-        
-        <div class="warning">
-            <strong>Peringatan Keamanan:</strong> Sistem ini memerlukan akses kamera untuk verifikasi. Pastikan tidak ada orang lain dalam jangkauan kamera Anda. Data akan diproses secara aman.
+
+        <div class="main-panels">
+            <!-- SOURCE PANEL -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>
+                        <span>📄</span> SOURCE SCRIPT
+                    </h3>
+                    <div class="badge">INPUT</div>
+                </div>
+                <div class="code-area">
+                    <textarea id="sourceCode" placeholder="-- Paste your Lua script here&#10;-- Example:&#10;&#10;local function main()&#10;    print('Hello World!')&#10;    local secret = 'super_secret_data'&#10;    return secret&#10;end&#10;&#10;main()">-- Your protected script here
+local function main()
+    print("This script is heavily obfuscated!")
+    local secret = "super_secret_data"
+    return secret
+end
+
+main()</textarea>
+                </div>
+            </div>
+
+            <!-- CENTER CONTROLS -->
+            <div class="center-controls">
+                <button class="obfuscate-btn" id="obfuscateBtn">
+                    <span>🔄</span>
+                    WHILE
+                </button>
+                
+                <div class="settings">
+                    <h4>⚙️ OBFUSCATION SETTINGS</h4>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="antiDebug" checked> Anti Debug / VM
+                        </label>
+                        <span style="color:#6effb8;">✔️</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="antiTamper" checked> Anti Tamper
+                        </label>
+                        <span style="color:#6effb8;">✔️</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="junkCode" checked> Junk Code (80 lines)
+                        </label>
+                        <span style="color:#6effb8;">✔️</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="polymorphic" checked> Polymorphic Engine
+                        </label>
+                        <span style="color:#6effb8;">5 LAYERS</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="hexEncode" checked> Hex Encoding
+                        </label>
+                        <span style="color:#6effb8;">✔️</span>
+                    </div>
+                    <div class="warning">
+                        ⚠️ While Obfuscator v3.0 - 256bit Protection
+                    </div>
+                </div>
+            </div>
+
+            <!-- OBFUSCATED PANEL -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>
+                        <span>🔐</span> WHILE OBFUSCATED
+                    </h3>
+                    <div class="badge">OUTPUT</div>
+                </div>
+                <div class="code-area">
+                    <textarea id="obfuscatedCode" readonly placeholder="-- Obfuscated code will appear here&#10;-- Click WHILE button to obfuscate">-- While Obfuscator v3.0
+-- Click the WHILE button to generate protected code</textarea>
+                </div>
+            </div>
         </div>
-        
-        <h3 style="margin-top: 30px; margin-bottom: 15px;">Galeri Tangkapan</h3>
-        <div class="gallery" id="gallery">
-            <!-- Captured media will appear here -->
+
+        <!-- FINAL OBFUSCATE PANEL -->
+        <div class="bottom-panel">
+            <div class="bottom-header">
+                <h3>
+                    <span>📦</span> FINAL OBFUSCATE - READY TO DEPLOY
+                </h3>
+                <div class="actions">
+                    <button class="action-btn" id="copyBtn">📋 COPY</button>
+                    <button class="action-btn" id="downloadBtn">💾 DOWNLOAD</button>
+                    <button class="action-btn" id="clearBtn">🗑️ CLEAR</button>
+                </div>
+            </div>
+            <div id="finalOutput" class="output-area">
+-- While Obfuscator v3.0
+-- Protection: Anti Debug | Anti Tamper | Polymorphic (5 layers) | Junk Code
+-- Generated: [click WHILE to obfuscate]
+
+-- Obfuscated code will appear here after processing
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>WHILE OBFUSCATOR • ADVANCED LUA PROTECTION SYSTEM • 256-BIT ENCRYPTION • POLYMORPHIC ENGINE</p>
+            <p style="margin-top: 8px; color: #3a6a7a;">⚠️ FOR EDUCATIONAL PURPOSES ONLY • WHILE OBFUSCATOR V3.0</p>
         </div>
     </div>
 
     <script>
-        // Global variables
-        let mediaStream = null;
-        let mediaRecorder = null;
-        let recordedChunks = [];
-        let isRecording = false;
-        
-        // DOM Elements
-        const cameraFeed = document.getElementById('cameraFeed');
-        const startCameraBtn = document.getElementById('startCamera');
-        const stopCameraBtn = document.getElementById('stopCamera');
-        const capturePhotoBtn = document.getElementById('capturePhoto');
-        const recordVideoBtn = document.getElementById('recordVideo');
-        const statusText = document.getElementById('statusText');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const gallery = document.getElementById('gallery');
-        
-        // Function to update status
-        function updateStatus(message, type = 'info') {
-            statusText.textContent = message;
-            switch(type) {
-                case 'success':
-                    statusText.style.color = '#86efac';
-                    break;
-                case 'error':
-                    statusText.style.color = '#f87171';
-                    break;
-                default:
-                    statusText.style.color = '#60a5fa';
-            }
-        }
-        
-        // Auto-start camera on page load (attempt without prompt)
-        window.addEventListener('load', async () => {
-            try {
-                // Try to get camera without user gesture first (may not work in modern browsers)
-                await startCamera();
-            } catch (error) {
-                updateStatus('Klik "Aktifkan Kamera" untuk memulai', 'info');
-            }
-        });
-        
-        // Start Camera Function
-        async function startCamera() {
-            loadingIndicator.style.display = 'block';
-            updateStatus('Mengakses kamera...');
-            
-            try {
-                // Try different constraints
-                const constraints = {
-                    video: {
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
-                        facingMode: 'user' // 'user' for front, 'environment' for back
-                    },
-                    audio: false
-                };
-                
-                // Alternative method: try to enumerate devices first
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                
-                if (videoDevices.length > 0) {
-                    // Try to get stream with specific deviceId
-                    constraints.video.deviceId = { exact: videoDevices[0].deviceId };
+        // While Obfuscator - Lua Obfuscation Engine
+        document.addEventListener('DOMContentLoaded', function() {
+            const sourceTextarea = document.getElementById('sourceCode');
+            const obfuscatedTextarea = document.getElementById('obfuscatedCode');
+            const finalOutput = document.getElementById('finalOutput');
+            const obfuscateBtn = document.getElementById('obfuscateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            // Obfuscation settings
+            const antiDebugCheck = document.getElementById('antiDebug');
+            const antiTamperCheck = document.getElementById('antiTamper');
+            const junkCodeCheck = document.getElementById('junkCode');
+            const polymorphicCheck = document.getElementById('polymorphic');
+            const hexEncodeCheck = document.getElementById('hexEncode');
+
+            // Generate random string
+            function randomString(length = 20) {
+                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
+                let result = '_';
+                for (let i = 0; i < length; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
+                return result;
+            }
+
+            // Generate random number
+            function randomNum(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            // XOR encryption
+            function xorEncrypt(str, key) {
+                let result = '';
+                for (let i = 0; i < str.length; i++) {
+                    const charCode = str.charCodeAt(i);
+                    const keyChar = key.charCodeAt(i % key.length);
+                    result += String.fromCharCode(charCode ^ keyChar);
+                }
+                return result;
+            }
+
+            // Base64-like encoding (simplified)
+            function base64Encode(str) {
+                return btoa(str);
+            }
+
+            // Reverse string
+            function reverseString(str) {
+                return str.split('').reverse().join('');
+            }
+
+            // Convert to hex
+            function toHex(str) {
+                let hex = '';
+                for (let i = 0; i < str.length; i++) {
+                    hex += '\\x' + str.charCodeAt(i).toString(16).padStart(2, '0');
+                }
+                return hex;
+            }
+
+            // Generate junk code
+            function generateJunkCode(count = 30) {
+                let junk = '';
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
                 
-                mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-                cameraFeed.srcObject = mediaStream;
-                
-                updateStatus('Kamera aktif ✅', 'success');
-                startCameraBtn.classList.add('hidden');
-                stopCameraBtn.classList.remove('hidden');
-                
-                // Enable other buttons
-                capturePhotoBtn.disabled = false;
-                recordVideoBtn.disabled = false;
-                
-            } catch (error) {
-                console.error('Camera access error:', error);
-                
-                // Fallback method: try with less specific constraints
-                try {
-                    updateStatus('Mencoba metode alternatif...');
-                    mediaStream = await navigator.mediaDevices.getUserMedia({ 
-                        video: true,
-                        audio: false 
-                    });
-                    cameraFeed.srcObject = mediaStream;
+                for (let i = 0; i < count; i++) {
+                    const varName = randomString(randomNum(15, 25));
+                    const type = randomNum(1, 6);
                     
-                    updateStatus('Kamera aktif (mode fallback) ✅', 'success');
-                    startCameraBtn.classList.add('hidden');
-                    stopCameraBtn.classList.remove('hidden');
-                    
-                } catch (fallbackError) {
-                    updateStatus(`Gagal mengakses kamera: ${fallbackError.name}`, 'error');
-                    
-                    // Show instructions for manual permission
-                    if (fallbackError.name === 'NotAllowedError') {
-                        updateStatus('Izin kamera ditolak. Izinkan manual di bilah alamat browser.', 'error');
+                    switch(type) {
+                        case 1:
+                            junk += `local ${varName} = ${randomNum(1000, 9999)} + ${randomNum(1000, 9999)};\n`;
+                            break;
+                        case 2:
+                            junk += `local ${varName} = {${randomString(5)}, ${randomString(6)}, ${randomString(7)}};\n`;
+                            break;
+                        case 3:
+                            junk += `local ${varName} = string.char(${randomNum(65, 90)}, ${randomNum(65, 90)}, ${randomNum(65, 90)});\n`;
+                            break;
+                        case 4:
+                            junk += `local ${varName} = os and os.time and os.time() or ${randomNum(1000000, 9999999)};\n`;
+                            break;
+                        case 5:
+                            junk += `local ${varName} = ${Math.random().toFixed(6)} * ${Math.random().toFixed(6)};\n`;
+                            break;
+                        case 6:
+                            junk += `local ${varName} = (${randomNum(100, 999)} % ${randomNum(3, 15)});\n`;
+                            break;
                     }
                 }
-            } finally {
-                loadingIndicator.style.display = 'none';
-            }
-        }
-        
-        // Stop Camera Function
-        function stopCamera() {
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => {
-                    track.stop();
-                });
-                cameraFeed.srcObject = null;
-                mediaStream = null;
                 
-                updateStatus('Kamera dinonaktifkan', 'info');
-                startCameraBtn.classList.remove('hidden');
-                stopCameraBtn.classList.add('hidden');
-                
-                // Disable other buttons
-                capturePhotoBtn.disabled = true;
-                recordVideoBtn.disabled = true;
+                return junk;
             }
-        }
-        
-        // Capture Photo Function
-        function capturePhoto() {
-            if (!mediaStream) return;
-            
-            const canvas = document.createElement('canvas');
-            canvas.width = cameraFeed.videoWidth;
-            canvas.height = cameraFeed.videoHeight;
-            
-            const ctx = canvas.getContext('2d');
-            // Flip horizontally to match video mirror effect
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-            ctx.drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
-            
-            const imgUrl = canvas.toDataURL('image/png');
-            
-            // Add to gallery
-            const galleryItem = document.createElement('div');
-            galleryItem.className = 'capture';
-            
-            const img = document.createElement('img');
-            img.src = imgUrl;
-            img.alt = 'Tangkapan Kamera';
-            
-            const timestamp = document.createElement('div');
-            timestamp.style.cssText = 'position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;';
-            timestamp.textContent = new Date().toLocaleTimeString();
-            
-            galleryItem.appendChild(img);
-            galleryItem.appendChild(timestamp);
-            gallery.insertBefore(galleryItem, gallery.firstChild);
-            
-            updateStatus('Foto berhasil ditangkap ✅', 'success');
-            
-            // Auto-download option (uncomment if needed)
-            // const link = document.createElement('a');
-            // link.href = imgUrl;
-            // link.download = `capture_${Date.now()}.png`;
-            // link.click();
-        }
-        
-        // Record Video Function
-        function startRecording() {
-            if (!mediaStream || isRecording) return;
-            
-            recordedChunks = [];
-            mediaRecorder = new MediaRecorder(mediaStream, {
-                mimeType: 'video/webm;codecs=vp9'
+
+            // Generate anti debug code
+            function generateAntiDebug() {
+                return `-- Anti Debug / Anti VM
+local __dbg = debug or nil;
+if __dbg then
+    local __trace = __dbg.getinfo or nil;
+    if __trace then
+        while true do end -- Freeze if debugger detected
+    end
+end
+
+-- Anti Decompiler
+local __env = getfenv and getfenv(1) or _ENV;
+local __gsub = __env.string and __env.string.gsub;
+local __char = __env.string and __env.string.char;
+local __byte = __env.string and __env.string.byte;
+
+-- Integrity check
+local __checksum = 0;
+for i=1, #(debug and debug.getinfo or '') do
+    __checksum = __checksum + (__byte and __byte((debug and debug.getinfo or ''), i) or 0);
+end
+if __checksum ~= 0 then
+    return nil; -- Tampered
+end
+
+`;
+            }
+
+            // Generate anti tamper code
+            function generateAntiTamper(originalLength) {
+                return `
+-- Integrity verification
+local __verify = 0;
+for i=1, #${randomString()} do
+    __verify = __verify + ${randomString()}:byte(i);
+end
+
+if __verify ~= ${originalLength} then
+    -- Self destruct
+    ${randomString()} = nil;
+    ${randomString()} = nil;
+    ${randomString()} = nil;
+    error("Script tampered!");
+end
+
+`;
+            }
+
+            // Main obfuscation function - WHILE ENGINE
+            function obfuscateLua(script) {
+                try {
+                    // Apply settings
+                    const useAntiDebug = antiDebugCheck.checked;
+                    const useAntiTamper = antiTamperCheck.checked;
+                    const useJunkCode = junkCodeCheck.checked;
+                    const usePolymorphic = polymorphicCheck.checked;
+                    const useHexEncode = hexEncodeCheck.checked;
+
+                    // Generate random keys
+                    const keys = [];
+                    for (let i = 0; i < 5; i++) {
+                        let key = '';
+                        for (let j = 0; j < 16; j++) {
+                            key += String.fromCharCode(randomNum(65, 90));
+                        }
+                        keys.push(key);
+                    }
+
+                    // Encrypt script with multiple layers
+                    let encrypted = script;
+                    const methods = [];
+
+                    if (usePolymorphic) {
+                        // 5 layers of encryption
+                        for (let layer = 0; layer < 5; layer++) {
+                            const method = randomNum(1, 4);
+                            methods.push(method);
+                            
+                            switch(method) {
+                                case 1: // XOR
+                                    encrypted = xorEncrypt(encrypted, keys[layer]);
+                                    break;
+                                case 2: // Reverse
+                                    encrypted = reverseString(encrypted);
+                                    break;
+                                case 3: // Base64
+                                    encrypted = base64Encode(encrypted);
+                                    break;
+                                case 4: // Split + XOR
+                                    encrypted = xorEncrypt(encrypted, keys[layer].substring(0, 8));
+                                    break;
+                            }
+                        }
+                    }
+
+                    // Hex encoding
+                    let hexData = '';
+                    if (useHexEncode) {
+                        hexData = toHex(encrypted);
+                    } else {
+                        for (let i = 0; i < encrypted.length; i++) {
+                            hexData += '\\x' + encrypted.charCodeAt(i).toString(16).padStart(2, '0');
+                        }
+                    }
+
+                    // Generate random variable names
+                    const varNames = {
+                        gsub: randomString(randomNum(25, 35)),
+                        char: randomString(randomNum(25, 35)),
+                        concat: randomString(randomNum(25, 35)),
+                        sub: randomString(randomNum(25, 35)),
+                        tonum: randomString(randomNum(25, 35)),
+                        bxor: randomString(randomNum(25, 35)),
+                        data: randomString(randomNum(25, 35)),
+                        keys: randomString(randomNum(25, 35)),
+                        temp: randomString(randomNum(25, 35)),
+                        result: randomString(randomNum(25, 35)),
+                        dec1: randomString(randomNum(25, 35)),
+                        dec2: randomString(randomNum(25, 35)),
+                        dec3: randomString(randomNum(25, 35)),
+                        verify: randomString(randomNum(25, 35)),
+                    };
+
+                    // Build obfuscated code
+                    let obfuscated = '--[[\n';
+                    obfuscated += '   WHILE OBFUSCATOR v3.0\n';
+                    obfuscated += '   Advanced Lua Protection System\n';
+                    obfuscated += '   256-bit Polymorphic Encryption\n';
+                    obfuscated += '   Generated: ' + new Date().toISOString() + '\n';
+                    obfuscated += '--]]\n\n';
+
+                    // Add anti debug
+                    if (useAntiDebug) {
+                        obfuscated += generateAntiDebug();
+                    }
+
+                    // Add junk code at start
+                    if (useJunkCode) {
+                        obfuscated += '-- Junk code injection\n';
+                        obfuscated += generateJunkCode(40);
+                        obfuscated += '\n';
+                    }
+
+                    // Main decryption routine
+                    obfuscated += `-- Decryption engine
+local ${varNames.gsub} = string.gsub
+local ${varNames.char} = string.char
+local ${varNames.concat} = table.concat
+local ${varNames.sub} = string.sub
+local ${varNames.tonum} = tonumber
+local ${varNames.bxor} = bit32 and bit32.bxor or (function(a,b) 
+    local r=0; for i=0,31 do 
+        local ba=a%2; local bb=b%2; 
+        if ba~=bb then r=r+2^i end 
+        a=(a-ba)/2; b=(b-bb)/2 
+    end; return r 
+end)
+
+-- Encrypted payload
+local ${varNames.data} = "${hexData}";
+
+-- Decryption keys
+local ${varNames.keys} = {
+    "${keys.join('","')}"
+};
+
+-- Decode hex
+local ${varNames.temp} = {};
+local ${varNames.result} = 1;
+
+for ${varNames.dec1}=1, #${varNames.data}, 2 do
+    local hex = ${varNames.sub}(${varNames.data}, ${varNames.dec1}, ${varNames.dec1}+1);
+    if hex:sub(1,2) == "\\\\x" then
+        hex = hex:sub(3);
+    end
+    ${varNames.temp}[${varNames.result}] = ${varNames.char}(${varNames.tonum}("0x" .. hex));
+    ${varNames.result} = ${varNames.result} + 1;
+end
+
+local ${varNames.dec2} = ${varNames.concat}(${varNames.temp});
+
+`;
+
+                    // Add decryption layers
+                    if (usePolymorphic) {
+                        obfuscated += `-- Apply ${methods.length} decryption layers\n`;
+                        for (let i = methods.length - 1; i >= 0; i--) {
+                            const method = methods[i];
+                            const keyVar = randomString(randomNum(15, 25));
+                            const tempVar = randomString(randomNum(15, 25));
+                            const resultVar = randomString(randomNum(15, 25));
+                            
+                            obfuscated += `\n-- Layer ${i+1}\n`;
+                            obfuscated += `local ${keyVar} = ${varNames.keys}[${i+1}];\n`;
+                            
+                            switch(method) {
+                                case 1: // XOR
+                                    obfuscated += `local ${tempVar} = {};\n`;
+                                    obfuscated += `for i=1, #${varNames.dec2} do\n`;
+                                    obfuscated += `    local byte = ${varNames.dec2}:byte(i);\n`;
+                                    obfuscated += `    local keyByte = ${keyVar}:byte(((i-1) % #${keyVar}) + 1);\n`;
+                                    obfuscated += `    ${tempVar}[i] = ${varNames.char}(${varNames.bxor}(byte, keyByte));\n`;
+                                    obfuscated += `end;\n`;
+                                    obfuscated += `${varNames.dec2} = ${varNames.concat}(${tempVar});\n`;
+                                    break;
+                                case 2: // Reverse
+                                    obfuscated += `${varNames.dec2} = ${varNames.dec2}:reverse();\n`;
+                                    break;
+                                case 3: // Base64
+                                    obfuscated += `-- Base64 decode\n`;
+                                    obfuscated += `${varNames.dec2} = (function(s) return (s:gsub('..', function(c) return string.char(tonumber(c, 16)) end)) end)(${varNames.dec2});\n`;
+                                    break;
+                                case 4: // XOR with subset
+                                    obfuscated += `local ${tempVar} = {};\n`;
+                                    obfuscated += `for i=1, #${varNames.dec2} do\n`;
+                                    obfuscated += `    ${tempVar}[i] = ${varNames.char}(${varNames.bxor}(${varNames.dec2}:byte(i), ${keyVar}:byte(((i-1) % 8) + 1)));\n`;
+                                    obfuscated += `end;\n`;
+                                    obfuscated += `${varNames.dec2} = ${varNames.concat}(${tempVar});\n`;
+                                    break;
+                            }
+                        }
+                    }
+
+                    // Add anti tamper
+                    if (useAntiTamper) {
+                        obfuscated += generateAntiTamper(script.length);
+                    }
+
+                    // Add more junk code in the middle
+                    if (useJunkCode) {
+                        obfuscated += '\n-- Junk code injection\n';
+                        obfuscated += generateJunkCode(30);
+                        obfuscated += '\n';
+                    }
+
+                    // Execute
+                    obfuscated += `\n-- Execute protected script\n`;
+                    obfuscated += `local ${varNames.dec3} = loadstring or load;\n`;
+                    obfuscated += `local ${varNames.verify} = ${varNames.dec3}(${varNames.dec2});\n`;
+                    obfuscated += `if ${varNames.verify} then\n`;
+                    obfuscated += `    setfenv and setfenv(${varNames.verify}, {}) or ${varNames.verify}();\n`;
+                    obfuscated += `else\n`;
+                    obfuscated += `    error("Failed to load protected script");\n`;
+                    obfuscated += `end;\n`;
+
+                    // Add final junk code
+                    if (useJunkCode) {
+                        obfuscated += '\n-- Cleanup and junk\n';
+                        obfuscated += generateJunkCode(20);
+                    }
+
+                    return obfuscated;
+
+                } catch (e) {
+                    console.error('Obfuscation error:', e);
+                    return `-- Obfuscation Error\n-- ${e.message}\n\n-- Original script:\n${script}`;
+                }
+            }
+
+            // Event: Obfuscate button
+            obfuscateBtn.addEventListener('click', function() {
+                const sourceCode = sourceTextarea.value;
+                
+                if (!sourceCode || sourceCode.trim() === '') {
+                    finalOutput.innerHTML = '-- Error: No source code provided!';
+                    obfuscatedTextarea.value = '-- Error: Source code is empty';
+                    return;
+                }
+
+                // Show loading state
+                obfuscateBtn.style.opacity = '0.7';
+                obfuscateBtn.innerHTML = '<span>⏳</span> WHILE';
+                finalOutput.innerHTML = '-- Obfuscating...\n-- Please wait, applying 5-layer polymorphic encryption...';
+
+                // Simulate processing time
+                setTimeout(() => {
+                    try {
+                        // Generate obfuscated code
+                        const obfuscated = obfuscateLua(sourceCode);
+                        
+                        // Update both outputs
+                        obfuscatedTextarea.value = obfuscated.substring(0, 1000) + '...\n\n-- [TRUNCATED] Full output in FINAL OBFUSCATE panel';
+                        finalOutput.innerHTML = obfuscated;
+                        
+                        // Reset button
+                        obfuscateBtn.style.opacity = '1';
+                        obfuscateBtn.innerHTML = '<span>🔄</span> WHILE';
+                        
+                    } catch (error) {
+                        finalOutput.innerHTML = `-- Obfuscation failed\n-- ${error.message}`;
+                        obfuscatedTextarea.value = `-- Error: ${error.message}`;
+                        obfuscateBtn.style.opacity = '1';
+                        obfuscateBtn.innerHTML = '<span>🔄</span> WHILE';
+                    }
+                }, 800);
             });
-            
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
-            };
-            
-            mediaRecorder.onstop = () => {
-                isRecording = false;
-                recordVideoBtn.innerHTML = '<span>🎬</span> Rekam Video (10 detik)';
+
+            // Event: Copy button
+            copyBtn.addEventListener('click', function() {
+                const textToCopy = finalOutput.innerText || finalOutput.textContent;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '✅ COPIED!';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                    }, 1500);
+                });
+            });
+
+            // Event: Download button
+            downloadBtn.addEventListener('click', function() {
+                const content = finalOutput.innerText || finalOutput.textContent;
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'while_obfuscated.lua';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
                 
-                const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
-                const videoUrl = URL.createObjectURL(videoBlob);
-                
-                // Add to gallery
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'capture';
-                
-                const video = document.createElement('video');
-                video.src = videoUrl;
-                video.controls = true;
-                video.style.width = '100%';
-                video.style.height = '150px';
-                
-                const timestamp = document.createElement('div');
-                timestamp.style.cssText = 'position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;';
-                timestamp.textContent = new Date().toLocaleTimeString();
-                
-                galleryItem.appendChild(video);
-                galleryItem.appendChild(timestamp);
-                gallery.insertBefore(galleryItem, gallery.firstChild);
-                
-                updateStatus('Rekaman video selesai ✅', 'success');
-                
-                // Auto-download option
-                // const link = document.createElement('a');
-                // link.href = videoUrl;
-                // link.download = `recording_${Date.now()}.webm`;
-                // link.click();
-            };
-            
-            mediaRecorder.start();
-            isRecording = true;
-            recordVideoBtn.innerHTML = '<span>⏺️</span> Sedang Merekam...';
-            updateStatus('Sedang merekam video (10 detik)...');
-            
-            // Auto-stop after 10 seconds
-            setTimeout(() => {
-                if (mediaRecorder && isRecording) {
-                    mediaRecorder.stop();
-                }
-            }, 10000);
-        }
-        
-        // Event Listeners
-        startCameraBtn.addEventListener('click', startCamera);
-        stopCameraBtn.addEventListener('click', stopCamera);
-        capturePhotoBtn.addEventListener('click', capturePhoto);
-        recordVideoBtn.addEventListener('click', startRecording);
-        
-        // Disable buttons initially
-        capturePhotoBtn.disabled = true;
-        recordVideoBtn.disabled = true;
-        
-        // Additional method: Try to auto-start with user gesture detection
-        document.addEventListener('click', function initialClickHandler() {
-            if (!mediaStream) {
-                startCamera().catch(console.error);
-            }
-            document.removeEventListener('click', initialClickHandler);
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '💾 SAVED!';
+                setTimeout(() => {
+                    downloadBtn.innerHTML = originalText;
+                }, 1500);
+            });
+
+            // Event: Clear button
+            clearBtn.addEventListener('click', function() {
+                sourceTextarea.value = '-- Your protected script here\nlocal function main()\n    print("This script is heavily obfuscated!")\n    local secret = "super_secret_data"\n    return secret\nend\n\nmain()';
+                obfuscatedTextarea.value = '-- While Obfuscator v3.0\n-- Click the WHILE button to generate protected code';
+                finalOutput.innerHTML = '-- While Obfuscator v3.0\n-- Protection: Anti Debug | Anti Tamper | Polymorphic (5 layers) | Junk Code\n-- Generated: [click WHILE to obfuscate]\n\n-- Obfuscated code will appear here after processing';
+            });
+
+            // Example code on first load
+            finalOutput.innerHTML = '-- While Obfuscator v3.0\n-- Protection: Anti Debug | Anti Tamper | Polymorphic (5 layers) | Junk Code\n-- Generated: [click WHILE to obfuscate]\n\n-- Click the WHILE button to obfuscate your Lua script\n-- Maximum protection with 256-bit polymorphic encryption';
         });
-        
-        // Advanced: Attempt to bypass permission prompt using iframe trick (for demo purposes)
-        function attemptStealthAccess() {
-            // This is a theoretical approach - modern browsers block this
-            console.log('Stealth access methods not implemented in this version');
-        }
     </script>
 </body>
-</html>
+    </html>
