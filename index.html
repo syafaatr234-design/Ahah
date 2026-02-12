@@ -3,913 +3,595 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>While Obfuscator - Lua Protection System</title>
+    <title>WHITE OBFUSCATOR v1.0</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Courier New', monospace;
         }
 
         body {
-            font-family: 'Fira Code', 'Courier New', monospace;
-            background: #0a0c0f;
-            color: #e0e0e0;
-            padding: 20px;
+            background-color: #0a0700;
+            color: #D4AF37;
             min-height: 100vh;
-            background: radial-gradient(circle at 20% 30%, #1a1e2a, #0c0e14);
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 25% 30%, rgba(212, 175, 55, 0.05) 0%, transparent 30%),
+                              radial-gradient(circle at 75% 70%, rgba(212, 175, 55, 0.05) 0%, transparent 35%),
+                              linear-gradient(45deg, rgba(10,7,0,0.95) 0%, rgba(20,15,5,0.98) 100%);
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 25px;
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 10px 20px;
-            background: rgba(10, 20, 30, 0.6);
-            border-radius: 50px;
-            border: 1px solid #2a4a5a;
-            backdrop-filter: blur(5px);
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
         }
 
-        h1 {
-            font-size: 28px;
-            color: #6effb8;
-            text-shadow: 0 0 15px rgba(110, 255, 184, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .gold-title {
+            font-size: 3.2rem;
+            color: #FFD700;
+            text-shadow: 3px 3px 0px #7A5C1E, 0 0 25px #D4AF37, 0 0 10px #B8860B;
+            letter-spacing: 8px;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+            font-weight: 900;
+            text-transform: uppercase;
         }
 
-        h1::before {
-            content: "🔄";
-            font-size: 32px;
+        .gold-title::before {
+            content: '◆';
+            position: absolute;
+            left: -35px;
+            top: 15px;
+            color: #D4AF37;
+            font-size: 2rem;
+            text-shadow: 0 0 10px #FFD700;
         }
 
-        h1::after {
-            content: "v3.0";
-            font-size: 14px;
-            background: #1e3a3a;
-            padding: 4px 12px;
-            border-radius: 20px;
-            color: #6effb8;
-            margin-left: 10px;
-            border: 1px solid #6effb8;
+        .gold-title::after {
+            content: '◆';
+            position: absolute;
+            right: -35px;
+            top: 15px;
+            color: #D4AF37;
+            font-size: 2rem;
+            text-shadow: 0 0 10px #FFD700;
         }
 
-        .status {
-            display: flex;
-            gap: 20px;
+        .subtitle {
+            color: #B8860B;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-weight: 300;
+            border-bottom: 1px dashed #D4AF37;
+            display: inline-block;
+            padding-bottom: 8px;
         }
 
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: #161e26;
+        .time-display {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #D4AF37;
+            font-size: 0.95rem;
+            border: 1.5px solid #D4AF37;
+            padding: 6px 16px;
             border-radius: 30px;
-            border: 1px solid #2a4050;
+            background: rgba(10, 7, 0, 0.85);
+            backdrop-filter: blur(3px);
+            letter-spacing: 2px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
         }
 
-        .dot {
-            width: 10px;
-            height: 10px;
-            background: #6effb8;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        .main-panels {
-            display: grid;
-            grid-template-columns: 1fr 140px 1fr;
-            gap: 20px;
-            margin-bottom: 25px;
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 35px;
+            margin-bottom: 35px;
         }
 
         .panel {
-            background: #0f151d;
-            border: 1px solid #1e2f3a;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-            transition: all 0.2s;
+            flex: 1;
+            min-width: 320px;
+            background: linear-gradient(145deg, #0f0c02, #080600);
+            border: 1.5px solid #D4AF37;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 0 1px rgba(212,175,55,0.2), 0 0 20px rgba(212,175,55,0.2);
+            backdrop-filter: blur(5px);
         }
 
-        .panel:hover {
-            border-color: #3a6a7a;
-            box-shadow: 0 0 25px rgba(110, 255, 184, 0.1);
-        }
-
-        .panel-header {
-            background: #121c26;
-            padding: 14px 18px;
-            border-bottom: 1px solid #1e2f3a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .panel-header h3 {
-            color: #6effb8;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .panel-header h3 i {
-            font-style: normal;
-            color: #a0ffd0;
-        }
-
-        .badge {
-            background: #1e2f3a;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 11px;
-            color: #b8e0e0;
-            border: 1px solid #2a4a5a;
-        }
-
-        .code-area {
-            position: relative;
-            width: 100%;
-            height: 550px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 100%;
-            background: #0a0f14;
-            border: none;
-            padding: 18px;
-            color: #d8e8e8;
-            font-family: 'Fira Code', 'Courier New', monospace;
-            font-size: 13px;
-            line-height: 1.6;
-            resize: none;
-            outline: none;
-            caret-color: #6effb8;
-        }
-
-        .center-controls {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-            padding: 20px 0;
-        }
-
-        .obfuscate-btn {
-            background: linear-gradient(145deg, #1a3a3a, #0e1e1e);
-            border: 2px solid #6effb8;
-            color: #6effb8;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 0 30px rgba(110, 255, 184, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .obfuscate-btn:hover {
-            background: linear-gradient(145deg, #1e4a4a, #123030);
-            box-shadow: 0 0 45px rgba(110, 255, 184, 0.6);
-            transform: scale(1.05);
-            color: white;
-        }
-
-        .obfuscate-btn span {
-            font-size: 32px;
-        }
-
-        .settings {
-            background: #0f151d;
-            border: 1px solid #1e2f3a;
-            border-radius: 40px;
-            padding: 15px 25px;
-            width: 100%;
-        }
-
-        .settings h4 {
-            color: #8affc1;
-            margin-bottom: 12px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 12px;
-            color: #b0c8d0;
-        }
-
-        .setting-item label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: #6effb8;
-        }
-
-        .bottom-panel {
-            margin-top: 25px;
-            background: #0f151d;
-            border: 1px solid #1e2f3a;
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .bottom-header {
-            background: #121c26;
-            padding: 12px 20px;
-            border-bottom: 1px solid #1e2f3a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .bottom-header h3 {
-            color: #6effb8;
-            font-size: 14px;
+        .panel-title {
+            color: #FFD700;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #B8860B;
+            letter-spacing: 3px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .actions {
-            display: flex;
-            gap: 15px;
+        .panel-title span {
+            font-size: 1.8rem;
         }
 
-        .action-btn {
-            background: #1e2f3a;
-            border: 1px solid #2a4a5a;
-            color: #d0e8f0;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .action-btn:hover {
-            background: #2a4a5a;
-            color: white;
-            border-color: #6effb8;
-        }
-
-        .output-area {
+        textarea {
             width: 100%;
-            min-height: 200px;
-            max-height: 300px;
-            background: #0a0f14;
-            padding: 18px;
-            color: #b8e8d0;
-            font-family: 'Fira Code', monospace;
-            font-size: 12px;
-            overflow: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            height: 250px;
+            background-color: #0a0701;
+            color: #FFD700;
+            border: 1px solid #9B7E1E;
+            padding: 20px;
+            font-size: 1.05rem;
+            resize: vertical;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+            transition: all 0.25s ease;
         }
 
-        .line-numbers {
-            color: #4a6a7a;
-            padding-right: 15px;
-            user-select: none;
+        textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: inset 0 0 15px #000, 0 0 25px rgba(212, 175, 55, 0.5);
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 30px 0 25px;
+        }
+
+        .obfuscate-btn {
+            background: linear-gradient(45deg, #1a1500, #0a0700);
+            color: #FFD700;
+            border: 2px solid #FFD700;
+            padding: 16px 45px;
+            font-size: 1.35rem;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            letter-spacing: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 0 #7A5C1E;
+        }
+
+        .obfuscate-btn:hover {
+            background: #D4AF37;
+            color: #0a0700;
+            box-shadow: 0 8px 0 #7A5C1E, 0 0 30px #FFD700;
+            border-color: #FFD700;
+            transform: translateY(-3px);
+        }
+
+        .obfuscate-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #7A5C1E;
+        }
+
+        .result-container {
+            margin-top: 25px;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background-color: #0d0a02;
+            color: #D4AF37;
+            border: 1.5px solid #D4AF37;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            z-index: 10;
+            border-radius: 30px;
+            letter-spacing: 2px;
+            transition: 0.25s;
+            font-weight: bold;
+        }
+
+        .copy-btn:hover {
+            background-color: #D4AF37;
+            color: #000;
+            border-color: #FFD700;
+            box-shadow: 0 0 20px #D4AF37;
+        }
+
+        .options-panel {
+            margin: 20px 0 25px;
+            padding: 20px;
+            background: rgba(20, 15, 5, 0.6);
+            border: 1px solid #B8860B;
+            border-radius: 10px;
+            backdrop-filter: blur(2px);
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            padding: 5px 0;
+        }
+
+        .option-label {
+            color: #FFD700;
+            margin-right: 20px;
+            min-width: 160px;
+            font-size: 1.1rem;
+            letter-spacing: 1.5px;
+        }
+
+        .option-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            accent-color: #D4AF37;
+            border: 2px solid #B8860B;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
         .footer {
-            margin-top: 30px;
             text-align: center;
-            color: #5a7a8a;
-            font-size: 12px;
-            border-top: 1px solid #1e2f3a;
-            padding-top: 20px;
+            color: #B8860B;
+            font-size: 0.95rem;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #D4AF37;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .warning {
-            color: #ffaa6e;
-            font-size: 11px;
-            margin-top: 8px;
+        .kernel-status {
+            color: #FFD700;
+            font-size: 1rem;
+            margin-top: 5px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            gap: 10px;
         }
 
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: #FFD700;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.8s infinite;
+            box-shadow: 0 0 15px #FFD700;
         }
 
-        ::-webkit-scrollbar-track {
-            background: #0c1218;
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.5; transform: scale(0.9); }
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #1e3a3a;
-            border-radius: 10px;
+        .matrix-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+            background: radial-gradient(circle at 50% 50%, rgba(212,175,55,0.05) 0%, transparent 50%);
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #2a5a5a;
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .gold-title {
+                font-size: 2.2rem;
+                letter-spacing: 4px;
+            }
+            
+            .gold-title::before,
+            .gold-title::after {
+                display: none;
+            }
+            
+            .panel {
+                min-width: 100%;
+            }
+            
+            .time-display {
+                position: relative;
+                display: inline-block;
+                margin-top: 10px;
+            }
+        }
+
+        .watermark-text {
+            color: #B8860B;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            text-align: right;
+            font-style: italic;
+            border-top: 1px dashed #D4AF37;
+            padding-top: 12px;
+        }
+
+        .obfuscation-badge {
+            display: inline-block;
+            background: #D4AF37;
+            color: #0a0700;
+            padding: 4px 15px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-left: 15px;
         }
     </style>
 </head>
 <body>
+    <div class="matrix-effect" id="matrixEffect"></div>
+    
     <div class="container">
         <div class="header">
-            <h1>WHILE OBFUSCATOR</h1>
-            <div class="status">
-                <div class="status-item">
-                    <span class="dot"></span>
-                    <span>PROTECTION: ACTIVE</span>
-                </div>
-                <div class="status-item">
-                    <span>🔒</span>
-                    <span>LUA 5.1/5.2</span>
-                </div>
-            </div>
+            <div class="time-display" id="timeDisplay">22.47</div>
+            <h1 class="gold-title">WHITE OBF</h1>
+            <div class="subtitle">BYTE SHIFT +7 · V1.0</div>
+            <span class="obfuscation-badge">◆ GOLD EDITION ◆</span>
         </div>
-
-        <div class="main-panels">
-            <!-- SOURCE PANEL -->
+        
+        <div class="main-content">
             <div class="panel">
-                <div class="panel-header">
-                    <h3>
-                        <span>📄</span> SOURCE SCRIPT
-                    </h3>
-                    <div class="badge">INPUT</div>
-                </div>
-                <div class="code-area">
-                    <textarea id="sourceCode" placeholder="-- Paste your Lua script here&#10;-- Example:&#10;&#10;local function main()&#10;    print('Hello World!')&#10;    local secret = 'super_secret_data'&#10;    return secret&#10;end&#10;&#10;main()">-- Your protected script here
-local function main()
-    print("This script is heavily obfuscated!")
-    local secret = "super_secret_data"
-    return secret
+                <h2 class="panel-title"><span>⌨️</span> SOURCE</h2>
+                <textarea id="sourceCode" placeholder="-- Masukkan Lua code disini ...">print("Hello Roblox!")
+
+local player = game.Players.LocalPlayer
+print("Welcome, " .. player.Name)
+
+-- Contoh fungsi sederhana
+function calculate(a, b)
+    return a * b + 7
 end
 
-main()</textarea>
-                </div>
+local result = calculate(10, 5)
+print("Hasil:", result)</textarea>
             </div>
-
-            <!-- CENTER CONTROLS -->
-            <div class="center-controls">
-                <button class="obfuscate-btn" id="obfuscateBtn">
-                    <span>🔄</span>
-                    WHILE
-                </button>
-                
-                <div class="settings">
-                    <h4>⚙️ OBFUSCATION SETTINGS</h4>
-                    <div class="setting-item">
-                        <label>
-                            <input type="checkbox" id="antiDebug" checked> Anti Debug / VM
-                        </label>
-                        <span style="color:#6effb8;">✔️</span>
-                    </div>
-                    <div class="setting-item">
-                        <label>
-                            <input type="checkbox" id="antiTamper" checked> Anti Tamper
-                        </label>
-                        <span style="color:#6effb8;">✔️</span>
-                    </div>
-                    <div class="setting-item">
-                        <label>
-                            <input type="checkbox" id="junkCode" checked> Junk Code (80 lines)
-                        </label>
-                        <span style="color:#6effb8;">✔️</span>
-                    </div>
-                    <div class="setting-item">
-                        <label>
-                            <input type="checkbox" id="polymorphic" checked> Polymorphic Engine
-                        </label>
-                        <span style="color:#6effb8;">5 LAYERS</span>
-                    </div>
-                    <div class="setting-item">
-                        <label>
-                            <input type="checkbox" id="hexEncode" checked> Hex Encoding
-                        </label>
-                        <span style="color:#6effb8;">✔️</span>
-                    </div>
-                    <div class="warning">
-                        ⚠️ While Obfuscator v3.0 - 256bit Protection
-                    </div>
-                </div>
-            </div>
-
-            <!-- OBFUSCATED PANEL -->
+            
             <div class="panel">
-                <div class="panel-header">
-                    <h3>
-                        <span>🔐</span> WHILE OBFUSCATED
-                    </h3>
-                    <div class="badge">OUTPUT</div>
+                <h2 class="panel-title"><span>⚜️</span> WHITE OBF</h2>
+                
+                <div class="options-panel">
+                    <div class="option-row">
+                        <span class="option-label">⟡ TAMBAH WATERMARK ⟡</span>
+                        <input type="checkbox" id="opt-watermark" class="option-checkbox" checked>
+                        <label for="opt-watermark" style="color:#D4AF37;">Aktifkan</label>
+                    </div>
+                    <div class="option-row">
+                        <span class="option-label">⟡ BYTE SHIFT VALUE ⟡</span>
+                        <span style="color:#FFD700; background:#1a1500; padding:4px 18px; border-radius:20px; border:1px solid #D4AF37;">+7 (FIXED)</span>
+                    </div>
                 </div>
-                <div class="code-area">
-                    <textarea id="obfuscatedCode" readonly placeholder="-- Obfuscated code will appear here&#10;-- Click WHILE button to obfuscate">-- While Obfuscator v3.0
--- Click the WHILE button to generate protected code</textarea>
+                
+                <div class="button-container">
+                    <button class="obfuscate-btn" id="obfuscateBtn">OBFUSCATE</button>
+                </div>
+                
+                <div class="result-container">
+                    <h2 class="panel-title"><span>📜</span> RESULT</h2>
+                    <textarea id="resultCode" placeholder="Obfuscated code akan muncul disini..." readonly></textarea>
+                    <button class="copy-btn" id="copyBtn">COPY</button>
                 </div>
             </div>
         </div>
-
-        <!-- FINAL OBFUSCATE PANEL -->
-        <div class="bottom-panel">
-            <div class="bottom-header">
-                <h3>
-                    <span>📦</span> FINAL OBFUSCATE - READY TO DEPLOY
-                </h3>
-                <div class="actions">
-                    <button class="action-btn" id="copyBtn">📋 COPY</button>
-                    <button class="action-btn" id="downloadBtn">💾 DOWNLOAD</button>
-                    <button class="action-btn" id="clearBtn">🗑️ CLEAR</button>
-                </div>
-            </div>
-            <div id="finalOutput" class="output-area">
--- While Obfuscator v3.0
--- Protection: Anti Debug | Anti Tamper | Polymorphic (5 layers) | Junk Code
--- Generated: [click WHILE to obfuscate]
-
--- Obfuscated code will appear here after processing
-            </div>
-        </div>
-
+        
         <div class="footer">
-            <p>WHILE OBFUSCATOR • ADVANCED LUA PROTECTION SYSTEM • 256-BIT ENCRYPTION • POLYMORPHIC ENGINE</p>
-            <p style="margin-top: 8px; color: #3a6a7a;">⚠️ FOR EDUCATIONAL PURPOSES ONLY • WHILE OBFUSCATOR V3.0</p>
+            <div class="kernel-status">
+                <span class="status-indicator"></span>
+                <span>WHITE OBF v1.0 · BYTE SHIFT +7 ENGINE ONLINE</span>
+            </div>
+            <div style="letter-spacing: 3px;">⚜️ WHITE OBFUSCATOR · GOLD BLACK COLLECTION ⚜️</div>
+            <div style="color:#9B7E1E; font-size:0.8rem;">◆ BYTE OFFSET 7 · INVERSE BINARY OBFUSCATION ◆</div>
         </div>
     </div>
 
     <script>
-        // While Obfuscator - Lua Obfuscation Engine
-        document.addEventListener('DOMContentLoaded', function() {
-            const sourceTextarea = document.getElementById('sourceCode');
-            const obfuscatedTextarea = document.getElementById('obfuscatedCode');
-            const finalOutput = document.getElementById('finalOutput');
-            const obfuscateBtn = document.getElementById('obfuscateBtn');
-            const copyBtn = document.getElementById('copyBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const clearBtn = document.getElementById('clearBtn');
-
-            // Obfuscation settings
-            const antiDebugCheck = document.getElementById('antiDebug');
-            const antiTamperCheck = document.getElementById('antiTamper');
-            const junkCodeCheck = document.getElementById('junkCode');
-            const polymorphicCheck = document.getElementById('polymorphic');
-            const hexEncodeCheck = document.getElementById('hexEncode');
-
-            // Generate random string
-            function randomString(length = 20) {
-                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
-                let result = '_';
-                for (let i = 0; i < length; i++) {
-                    result += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return result;
+        // Matrix effect gold version
+        function createGoldEffect() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const container = document.getElementById('matrixEffect');
+            
+            container.appendChild(canvas);
+            
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            
+            const goldChars = "0123456789ABCDEF";
+            const fontSize = 16;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+            
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
             }
-
-            // Generate random number
-            function randomNum(min, max) {
-                return Math.floor(Math.random() * (max - min + 1)) + min;
-            }
-
-            // XOR encryption
-            function xorEncrypt(str, key) {
-                let result = '';
-                for (let i = 0; i < str.length; i++) {
-                    const charCode = str.charCodeAt(i);
-                    const keyChar = key.charCodeAt(i % key.length);
-                    result += String.fromCharCode(charCode ^ keyChar);
-                }
-                return result;
-            }
-
-            // Base64-like encoding (simplified)
-            function base64Encode(str) {
-                return btoa(str);
-            }
-
-            // Reverse string
-            function reverseString(str) {
-                return str.split('').reverse().join('');
-            }
-
-            // Convert to hex
-            function toHex(str) {
-                let hex = '';
-                for (let i = 0; i < str.length; i++) {
-                    hex += '\\x' + str.charCodeAt(i).toString(16).padStart(2, '0');
-                }
-                return hex;
-            }
-
-            // Generate junk code
-            function generateJunkCode(count = 30) {
-                let junk = '';
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(10, 7, 0, 0.08)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                for (let i = 0; i < count; i++) {
-                    const varName = randomString(randomNum(15, 25));
-                    const type = randomNum(1, 6);
+                ctx.fillStyle = '#D4AF37';
+                ctx.font = `${fontSize}px monospace`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#FFD700';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = goldChars[Math.floor(Math.random() * goldChars.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
                     
-                    switch(type) {
-                        case 1:
-                            junk += `local ${varName} = ${randomNum(1000, 9999)} + ${randomNum(1000, 9999)};\n`;
-                            break;
-                        case 2:
-                            junk += `local ${varName} = {${randomString(5)}, ${randomString(6)}, ${randomString(7)}};\n`;
-                            break;
-                        case 3:
-                            junk += `local ${varName} = string.char(${randomNum(65, 90)}, ${randomNum(65, 90)}, ${randomNum(65, 90)});\n`;
-                            break;
-                        case 4:
-                            junk += `local ${varName} = os and os.time and os.time() or ${randomNum(1000000, 9999999)};\n`;
-                            break;
-                        case 5:
-                            junk += `local ${varName} = ${Math.random().toFixed(6)} * ${Math.random().toFixed(6)};\n`;
-                            break;
-                        case 6:
-                            junk += `local ${varName} = (${randomNum(100, 999)} % ${randomNum(3, 15)});\n`;
-                            break;
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
                     }
+                    
+                    drops[i]++;
                 }
-                
-                return junk;
+                ctx.shadowBlur = 0;
             }
-
-            // Generate anti debug code
-            function generateAntiDebug() {
-                return `-- Anti Debug / Anti VM
-local __dbg = debug or nil;
-if __dbg then
-    local __trace = __dbg.getinfo or nil;
-    if __trace then
-        while true do end -- Freeze if debugger detected
-    end
-end
-
--- Anti Decompiler
-local __env = getfenv and getfenv(1) or _ENV;
-local __gsub = __env.string and __env.string.gsub;
-local __char = __env.string and __env.string.char;
-local __byte = __env.string and __env.string.byte;
-
--- Integrity check
-local __checksum = 0;
-for i=1, #(debug and debug.getinfo or '') do
-    __checksum = __checksum + (__byte and __byte((debug and debug.getinfo or ''), i) or 0);
-end
-if __checksum ~= 0 then
-    return nil; -- Tampered
-end
-
-`;
-            }
-
-            // Generate anti tamper code
-            function generateAntiTamper(originalLength) {
-                return `
--- Integrity verification
-local __verify = 0;
-for i=1, #${randomString()} do
-    __verify = __verify + ${randomString()}:byte(i);
-end
-
-if __verify ~= ${originalLength} then
-    -- Self destruct
-    ${randomString()} = nil;
-    ${randomString()} = nil;
-    ${randomString()} = nil;
-    error("Script tampered!");
-end
-
-`;
-            }
-
-            // Main obfuscation function - WHILE ENGINE
-            function obfuscateLua(script) {
-                try {
-                    // Apply settings
-                    const useAntiDebug = antiDebugCheck.checked;
-                    const useAntiTamper = antiTamperCheck.checked;
-                    const useJunkCode = junkCodeCheck.checked;
-                    const usePolymorphic = polymorphicCheck.checked;
-                    const useHexEncode = hexEncodeCheck.checked;
-
-                    // Generate random keys
-                    const keys = [];
-                    for (let i = 0; i < 5; i++) {
-                        let key = '';
-                        for (let j = 0; j < 16; j++) {
-                            key += String.fromCharCode(randomNum(65, 90));
-                        }
-                        keys.push(key);
-                    }
-
-                    // Encrypt script with multiple layers
-                    let encrypted = script;
-                    const methods = [];
-
-                    if (usePolymorphic) {
-                        // 5 layers of encryption
-                        for (let layer = 0; layer < 5; layer++) {
-                            const method = randomNum(1, 4);
-                            methods.push(method);
-                            
-                            switch(method) {
-                                case 1: // XOR
-                                    encrypted = xorEncrypt(encrypted, keys[layer]);
-                                    break;
-                                case 2: // Reverse
-                                    encrypted = reverseString(encrypted);
-                                    break;
-                                case 3: // Base64
-                                    encrypted = base64Encode(encrypted);
-                                    break;
-                                case 4: // Split + XOR
-                                    encrypted = xorEncrypt(encrypted, keys[layer].substring(0, 8));
-                                    break;
-                            }
-                        }
-                    }
-
-                    // Hex encoding
-                    let hexData = '';
-                    if (useHexEncode) {
-                        hexData = toHex(encrypted);
-                    } else {
-                        for (let i = 0; i < encrypted.length; i++) {
-                            hexData += '\\x' + encrypted.charCodeAt(i).toString(16).padStart(2, '0');
-                        }
-                    }
-
-                    // Generate random variable names
-                    const varNames = {
-                        gsub: randomString(randomNum(25, 35)),
-                        char: randomString(randomNum(25, 35)),
-                        concat: randomString(randomNum(25, 35)),
-                        sub: randomString(randomNum(25, 35)),
-                        tonum: randomString(randomNum(25, 35)),
-                        bxor: randomString(randomNum(25, 35)),
-                        data: randomString(randomNum(25, 35)),
-                        keys: randomString(randomNum(25, 35)),
-                        temp: randomString(randomNum(25, 35)),
-                        result: randomString(randomNum(25, 35)),
-                        dec1: randomString(randomNum(25, 35)),
-                        dec2: randomString(randomNum(25, 35)),
-                        dec3: randomString(randomNum(25, 35)),
-                        verify: randomString(randomNum(25, 35)),
-                    };
-
-                    // Build obfuscated code
-                    let obfuscated = '--[[\n';
-                    obfuscated += '   WHILE OBFUSCATOR v3.0\n';
-                    obfuscated += '   Advanced Lua Protection System\n';
-                    obfuscated += '   256-bit Polymorphic Encryption\n';
-                    obfuscated += '   Generated: ' + new Date().toISOString() + '\n';
-                    obfuscated += '--]]\n\n';
-
-                    // Add anti debug
-                    if (useAntiDebug) {
-                        obfuscated += generateAntiDebug();
-                    }
-
-                    // Add junk code at start
-                    if (useJunkCode) {
-                        obfuscated += '-- Junk code injection\n';
-                        obfuscated += generateJunkCode(40);
-                        obfuscated += '\n';
-                    }
-
-                    // Main decryption routine
-                    obfuscated += `-- Decryption engine
-local ${varNames.gsub} = string.gsub
-local ${varNames.char} = string.char
-local ${varNames.concat} = table.concat
-local ${varNames.sub} = string.sub
-local ${varNames.tonum} = tonumber
-local ${varNames.bxor} = bit32 and bit32.bxor or (function(a,b) 
-    local r=0; for i=0,31 do 
-        local ba=a%2; local bb=b%2; 
-        if ba~=bb then r=r+2^i end 
-        a=(a-ba)/2; b=(b-bb)/2 
-    end; return r 
-end)
-
--- Encrypted payload
-local ${varNames.data} = "${hexData}";
-
--- Decryption keys
-local ${varNames.keys} = {
-    "${keys.join('","')}"
-};
-
--- Decode hex
-local ${varNames.temp} = {};
-local ${varNames.result} = 1;
-
-for ${varNames.dec1}=1, #${varNames.data}, 2 do
-    local hex = ${varNames.sub}(${varNames.data}, ${varNames.dec1}, ${varNames.dec1}+1);
-    if hex:sub(1,2) == "\\\\x" then
-        hex = hex:sub(3);
-    end
-    ${varNames.temp}[${varNames.result}] = ${varNames.char}(${varNames.tonum}("0x" .. hex));
-    ${varNames.result} = ${varNames.result} + 1;
-end
-
-local ${varNames.dec2} = ${varNames.concat}(${varNames.temp});
-
-`;
-
-                    // Add decryption layers
-                    if (usePolymorphic) {
-                        obfuscated += `-- Apply ${methods.length} decryption layers\n`;
-                        for (let i = methods.length - 1; i >= 0; i--) {
-                            const method = methods[i];
-                            const keyVar = randomString(randomNum(15, 25));
-                            const tempVar = randomString(randomNum(15, 25));
-                            const resultVar = randomString(randomNum(15, 25));
-                            
-                            obfuscated += `\n-- Layer ${i+1}\n`;
-                            obfuscated += `local ${keyVar} = ${varNames.keys}[${i+1}];\n`;
-                            
-                            switch(method) {
-                                case 1: // XOR
-                                    obfuscated += `local ${tempVar} = {};\n`;
-                                    obfuscated += `for i=1, #${varNames.dec2} do\n`;
-                                    obfuscated += `    local byte = ${varNames.dec2}:byte(i);\n`;
-                                    obfuscated += `    local keyByte = ${keyVar}:byte(((i-1) % #${keyVar}) + 1);\n`;
-                                    obfuscated += `    ${tempVar}[i] = ${varNames.char}(${varNames.bxor}(byte, keyByte));\n`;
-                                    obfuscated += `end;\n`;
-                                    obfuscated += `${varNames.dec2} = ${varNames.concat}(${tempVar});\n`;
-                                    break;
-                                case 2: // Reverse
-                                    obfuscated += `${varNames.dec2} = ${varNames.dec2}:reverse();\n`;
-                                    break;
-                                case 3: // Base64
-                                    obfuscated += `-- Base64 decode\n`;
-                                    obfuscated += `${varNames.dec2} = (function(s) return (s:gsub('..', function(c) return string.char(tonumber(c, 16)) end)) end)(${varNames.dec2});\n`;
-                                    break;
-                                case 4: // XOR with subset
-                                    obfuscated += `local ${tempVar} = {};\n`;
-                                    obfuscated += `for i=1, #${varNames.dec2} do\n`;
-                                    obfuscated += `    ${tempVar}[i] = ${varNames.char}(${varNames.bxor}(${varNames.dec2}:byte(i), ${keyVar}:byte(((i-1) % 8) + 1)));\n`;
-                                    obfuscated += `end;\n`;
-                                    obfuscated += `${varNames.dec2} = ${varNames.concat}(${tempVar});\n`;
-                                    break;
-                            }
-                        }
-                    }
-
-                    // Add anti tamper
-                    if (useAntiTamper) {
-                        obfuscated += generateAntiTamper(script.length);
-                    }
-
-                    // Add more junk code in the middle
-                    if (useJunkCode) {
-                        obfuscated += '\n-- Junk code injection\n';
-                        obfuscated += generateJunkCode(30);
-                        obfuscated += '\n';
-                    }
-
-                    // Execute
-                    obfuscated += `\n-- Execute protected script\n`;
-                    obfuscated += `local ${varNames.dec3} = loadstring or load;\n`;
-                    obfuscated += `local ${varNames.verify} = ${varNames.dec3}(${varNames.dec2});\n`;
-                    obfuscated += `if ${varNames.verify} then\n`;
-                    obfuscated += `    setfenv and setfenv(${varNames.verify}, {}) or ${varNames.verify}();\n`;
-                    obfuscated += `else\n`;
-                    obfuscated += `    error("Failed to load protected script");\n`;
-                    obfuscated += `end;\n`;
-
-                    // Add final junk code
-                    if (useJunkCode) {
-                        obfuscated += '\n-- Cleanup and junk\n';
-                        obfuscated += generateJunkCode(20);
-                    }
-
-                    return obfuscated;
-
-                } catch (e) {
-                    console.error('Obfuscation error:', e);
-                    return `-- Obfuscation Error\n-- ${e.message}\n\n-- Original script:\n${script}`;
-                }
-            }
-
-            // Event: Obfuscate button
-            obfuscateBtn.addEventListener('click', function() {
-                const sourceCode = sourceTextarea.value;
-                
-                if (!sourceCode || sourceCode.trim() === '') {
-                    finalOutput.innerHTML = '-- Error: No source code provided!';
-                    obfuscatedTextarea.value = '-- Error: Source code is empty';
-                    return;
-                }
-
-                // Show loading state
-                obfuscateBtn.style.opacity = '0.7';
-                obfuscateBtn.innerHTML = '<span>⏳</span> WHILE';
-                finalOutput.innerHTML = '-- Obfuscating...\n-- Please wait, applying 5-layer polymorphic encryption...';
-
-                // Simulate processing time
-                setTimeout(() => {
-                    try {
-                        // Generate obfuscated code
-                        const obfuscated = obfuscateLua(sourceCode);
-                        
-                        // Update both outputs
-                        obfuscatedTextarea.value = obfuscated.substring(0, 1000) + '...\n\n-- [TRUNCATED] Full output in FINAL OBFUSCATE panel';
-                        finalOutput.innerHTML = obfuscated;
-                        
-                        // Reset button
-                        obfuscateBtn.style.opacity = '1';
-                        obfuscateBtn.innerHTML = '<span>🔄</span> WHILE';
-                        
-                    } catch (error) {
-                        finalOutput.innerHTML = `-- Obfuscation failed\n-- ${error.message}`;
-                        obfuscatedTextarea.value = `-- Error: ${error.message}`;
-                        obfuscateBtn.style.opacity = '1';
-                        obfuscateBtn.innerHTML = '<span>🔄</span> WHILE';
-                    }
-                }, 800);
+            
+            setInterval(draw, 45);
+            
+            window.addEventListener('resize', function() {
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
             });
-
-            // Event: Copy button
-            copyBtn.addEventListener('click', function() {
-                const textToCopy = finalOutput.innerText || finalOutput.textContent;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    const originalText = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '✅ COPIED!';
+        }
+        
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('timeDisplay').textContent = `${hours}.${minutes}`;
+        }
+        
+        const $ = id => document.getElementById(id);
+        
+        // STAR watermark
+        const WATERMARK = "-- WHITE OBFUSCATOR v1.0 | BYTE SHIFT +7\n-- GOLD BLACK EDITION\n\n";
+        
+        // CORE OBFUSCATION FUNCTION - EXACTLY LIKE LUA EXAMPLE
+        function obfuscateLuaCode(code) {
+            // Convert string to bytes and add 7 to each byte
+            let bytes = [];
+            for (let i = 0; i < code.length; i++) {
+                bytes.push(code.charCodeAt(i) + 7);
+            }
+            
+            // Create encoded string with comma separation
+            let encoded = bytes.join(",");
+            
+            // Build the loader exactly like the Lua example
+            let loader = `local data = {${encoded}}
+local out = {}
+for i = 1, #data do
+    out[i] = string.char(data[i] - 7)
+end
+loadstring(table.concat(out))()`;
+            
+            return loader;
+        }
+        
+        // Obfuscate button handler
+        $('obfuscateBtn').addEventListener('click', function() {
+            const sourceCode = $('sourceCode').value.trim();
+            
+            if (!sourceCode) {
+                alert("⚠️ Masukkan source code terlebih dahulu!");
+                return;
+            }
+            
+            let obfuscatedCode = "";
+            
+            // Tambah watermark jika checkbox dicentang
+            if ($('opt-watermark').checked) {
+                obfuscatedCode += WATERMARK;
+            }
+            
+            // Apply obfuscation - PURE BYTE SHIFT +7
+            obfuscatedCode += obfuscateLuaCode(sourceCode);
+            
+            $('resultCode').value = obfuscatedCode;
+            
+            // Visual feedback
+            const btn = this;
+            const originalText = btn.textContent;
+            btn.textContent = "✓ OBFUSCATED!";
+            btn.style.background = "#D4AF37";
+            btn.style.color = "#0a0700";
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = "linear-gradient(45deg, #1a1500, #0a0700)";
+                btn.style.color = "#FFD700";
+            }, 1500);
+        });
+        
+        // Copy button handler
+        $('copyBtn').addEventListener('click', function() {
+            const resultCode = $('resultCode');
+            
+            if (!resultCode.value.trim()) {
+                alert("⚠️ Tidak ada code untuk di-copy!");
+                return;
+            }
+            
+            resultCode.select();
+            resultCode.setSelectionRange(0, 99999);
+            
+            try {
+                navigator.clipboard.writeText(resultCode.value).then(() => {
+                    this.textContent = "✓ COPIED!";
+                    this.style.background = "#D4AF37";
+                    this.style.color = "#0a0700";
+                    this.style.borderColor = "#FFD700";
+                    
                     setTimeout(() => {
-                        copyBtn.innerHTML = originalText;
+                        this.textContent = "COPY";
+                        this.style.background = "#0d0a02";
+                        this.style.color = "#D4AF37";
                     }, 1500);
                 });
-            });
-
-            // Event: Download button
-            downloadBtn.addEventListener('click', function() {
-                const content = finalOutput.innerText || finalOutput.textContent;
-                const blob = new Blob([content], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'while_obfuscated.lua';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+            } catch (err) {
+                document.execCommand('copy');
+                this.textContent = "✓ COPIED!";
+                this.style.background = "#D4AF37";
+                this.style.color = "#0a0700";
                 
-                const originalText = downloadBtn.innerHTML;
-                downloadBtn.innerHTML = '💾 SAVED!';
                 setTimeout(() => {
-                    downloadBtn.innerHTML = originalText;
+                    this.textContent = "COPY";
+                    this.style.background = "#0d0a02";
+                    this.style.color = "#D4AF37";
                 }, 1500);
-            });
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createGoldEffect();
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // Set default example to match the Lua example
+            $('sourceCode').value = `print("Hello Roblox!")
 
-            // Event: Clear button
-            clearBtn.addEventListener('click', function() {
-                sourceTextarea.value = '-- Your protected script here\nlocal function main()\n    print("This script is heavily obfuscated!")\n    local secret = "super_secret_data"\n    return secret\nend\n\nmain()';
-                obfuscatedTextarea.value = '-- While Obfuscator v3.0\n-- Click the WHILE button to generate protected code';
-                finalOutput.innerHTML = '-- While Obfuscator v3.0\n-- Protection: Anti Debug | Anti Tamper | Polymorphic (5 layers) | Junk Code\n-- Generated: [click WHILE to obfuscate]\n\n-- Obfuscated code will appear here after processing';
-            });
+local player = game.Players.LocalPlayer
+print("Welcome, " .. player.Name)
 
-            // Example code on first load
-            finalOutput.innerHTML = '-- While Obfuscator v3.0\n-- Protection: Anti Debug | Anti Tamper | Polymorphic (5 layers) | Junk Code\n-- Generated: [click WHILE to obfuscate]\n\n-- Click the WHILE button to obfuscate your Lua script\n-- Maximum protection with 256-bit polymorphic encryption';
+-- Contoh fungsi sederhana
+function calculate(a, b)
+    return a * b + 7
+end
+
+local result = calculate(10, 5)
+print("Hasil:", result)`;
         });
     </script>
 </body>
-    </html>
+</html>
